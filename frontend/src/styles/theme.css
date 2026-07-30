@@ -1,0 +1,199 @@
+@import 'tailwindcss';
+
+/* =============================================================
+   Tema Classroom
+   Superficies neutras (blanco / gris muy claro), texto gris oscuro.
+   El color vive en los ICONOS y en pequenos acentos, no en el fondo.
+   La identidad rosa/marron se conserva como acento, no como base.
+   ============================================================= */
+
+@theme {
+  /* --- Neutros: la base de toda la interfaz --- */
+  --color-canvas: #f6f7f8;
+  --color-surface: #ffffff;
+  --color-line: #e4e7ea;
+  --color-line-strong: #cfd4d9;
+  --color-ink: #1f2328;
+  --color-ink-soft: #4a5159;
+  --color-ink-muted: #79818b;
+  --color-hover: #f1f3f5;
+
+  /* --- Acento de marca (rosa apagado): botones y estado activo --- */
+  --color-accent-50: #fbf4f6;
+  --color-accent-100: #f5e7eb;
+  --color-accent-200: #ead0d8;
+  --color-accent-300: #d4a9b6;
+  --color-accent-400: #b6808f;
+  --color-accent-500: #8c5f6e;
+  --color-accent-600: #754d5b;
+  --color-accent-700: #5c3b47;
+
+  /* --- Marron: acento calido secundario --- */
+  --color-brown-100: #f2ece8;
+  --color-brown-300: #c4ab9c;
+  --color-brown-500: #7a5c4b;
+  --color-brown-700: #533d31;
+
+  /* --- Colores de icono: aqui vive el color --- */
+  --color-icon-indigo: #4c5b8a;
+  --color-icon-teal: #3f6b63;
+  --color-icon-amber: #a8762f;
+  --color-icon-violet: #6b5b8a;
+  --color-icon-olive: #5f6b45;
+  --color-icon-rose: #8c5f6e;
+
+  /* --- Estados --- */
+  --color-success: #3f6b4f;
+  --color-warning: #a8762f;
+  --color-danger: #a34a4a;
+
+  /* Fondos suaves de los estados (badges). Variables para que el modo
+     oscuro los pueda invertir sin tocar los componentes. */
+  --color-success-soft: #e8f0ea;
+  --color-warning-soft: #f7efdf;
+  --color-danger-soft: #f7e9e9;
+
+  /* --- Superficies especiales --- */
+  --color-field: #ffffff; /* fondo de inputs y selects */
+  --color-knob: #ffffff; /* bolita del interruptor */
+  --color-backdrop: rgb(31 35 40 / 0.3); /* velo de los dialogos */
+
+  /* --- Tipografia --- */
+  --font-sans: 'Outfit', 'Segoe UI', system-ui, sans-serif;
+  --font-display: 'Bricolage Grotesque', 'Outfit', system-ui, sans-serif;
+  --font-mono: 'Google Sans Code', 'Cascadia Code', ui-monospace, monospace;
+
+  /* --- Formas --- */
+  --radius-card: 0.75rem;
+  --shadow-card: 0 1px 2px rgb(31 35 40 / 0.05), 0 1px 3px rgb(31 35 40 / 0.04);
+  --shadow-raised: 0 2px 8px rgb(31 35 40 / 0.1), 0 1px 3px rgb(31 35 40 / 0.06);
+}
+
+/* =============================================================
+   Modo oscuro
+   El atributo data-theme lo pone el script inline de index.html (antes del
+   primer pintado, para que no haya parpadeo) y despues lo mantiene
+   ThemeProvider con el valor guardado del usuario.
+
+   Aqui solo se redefinen los tokens: ningun componente sabe que existe el
+   modo oscuro. La rampa del acento se invierte (el 500 sigue siendo el color
+   de los botones, el 700 pasa a ser el texto claro sobre el 100).
+   ============================================================= */
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  --color-canvas: #14171a;
+  --color-surface: #1c2024;
+  --color-line: #2b3136;
+  --color-line-strong: #3a4249;
+  --color-ink: #e8eaed;
+  --color-ink-soft: #b6bcc3;
+  --color-ink-muted: #868e96;
+  --color-hover: #24292e;
+
+  --color-accent-50: #241b1e;
+  --color-accent-100: #33262b;
+  --color-accent-200: #452f37;
+  --color-accent-300: #6b4653;
+  --color-accent-400: #8a5a68;
+  --color-accent-500: #9c6675;
+  --color-accent-600: #c08e9c;
+  --color-accent-700: #e3c2cb;
+
+  --color-brown-100: #2a221d;
+  --color-brown-300: #6b5445;
+  --color-brown-500: #b08e79;
+  --color-brown-700: #d8c3b3;
+
+  /* Iconos aclarados: los tonos del modo claro no contrastan sobre #14171a. */
+  --color-icon-indigo: #8fa0d4;
+  --color-icon-teal: #7fb3a8;
+  --color-icon-amber: #d9a95f;
+  --color-icon-violet: #a596d1;
+  --color-icon-olive: #9aab74;
+  --color-icon-rose: #cf9dab;
+
+  --color-success: #7fbc93;
+  --color-warning: #d9a95f;
+  --color-danger: #e08585;
+  --color-success-soft: #1e2a22;
+  --color-warning-soft: #2c2419;
+  --color-danger-soft: #2e1f1f;
+
+  --color-field: #14171a;
+  --color-knob: #e8eaed;
+  --color-backdrop: rgb(0 0 0 / 0.6);
+
+  /* Sombras mas marcadas: sobre fondo oscuro casi no se ven. */
+  --shadow-card: 0 1px 2px rgb(0 0 0 / 0.4), 0 1px 3px rgb(0 0 0 / 0.3);
+  --shadow-raised: 0 4px 12px rgb(0 0 0 / 0.5), 0 1px 3px rgb(0 0 0 / 0.4);
+}
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    background-color: var(--color-canvas);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-optical-sizing: auto;
+  }
+
+  /* La marca y los titulos grandes usan la display. */
+  .font-display {
+    font-family: var(--font-display);
+    letter-spacing: -0.015em;
+  }
+
+  code,
+  kbd,
+  pre {
+    font-family: var(--font-mono);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent-500);
+    outline-offset: 2px;
+  }
+
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-line-strong) transparent;
+  }
+}
+
+@layer utilities {
+  /* Truncado a N lineas, usado en titulos de cards. */
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}
+
+/* =============================================================
+   Densidad (modulo Ajustes)
+   El atributo data-density lo pone SettingsProvider en <html>.
+   Solo afecta a las filas de lista marcadas con .density-row, para no
+   deformar el resto de la interfaz.
+   ============================================================= */
+:root[data-density='compact'] .density-row {
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+  font-size: 0.8125rem;
+}
+
+/* =============================================================
+   Ilustraciones en modo oscuro
+   Son JPEG de fondo blanco. En claro se integran con multiply; en oscuro
+   hay que invertirlas (fondo negro, trazo claro) y usar screen para que
+   el negro desaparezca.
+   ============================================================= */
+:root[data-theme='dark'] [data-illustration] {
+  filter: invert(1) hue-rotate(180deg);
+  mix-blend-mode: screen;
+}

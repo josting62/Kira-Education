@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#8c5f6e" />
+    <meta
+      name="description"
+      content="Simulador academico tipo Google Classroom: cursos, trabajo en clase, entregas y calificaciones."
+    />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Google+Sans+Code:ital,wght@0,300..800;1,300..800&family=Outfit:wght@100..900&display=swap"
+      rel="stylesheet"
+    />
+
+    <title>Kiro Education</title>
+    <script>
+      // Aplica el tema ANTES del primer pintado para que no haya un
+      // parpadeo blanco al recargar en modo oscuro. Solo lee la copia local:
+      // cuando la sesion carga, el valor guardado del usuario manda.
+      // Debe coincidir con frontend/src/lib/theme.ts
+      ;(function () {
+        try {
+          var saved = localStorage.getItem('kiro-theme') || 'system'
+          var dark =
+            saved === 'dark' ||
+            (saved === 'system' &&
+              window.matchMedia('(prefers-color-scheme: dark)').matches)
+          document.documentElement.dataset.theme = dark ? 'dark' : 'light'
+        } catch (e) {
+          document.documentElement.dataset.theme = 'light'
+        }
+      })()
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
