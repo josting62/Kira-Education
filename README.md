@@ -1,9 +1,74 @@
-# Classroom
+# Kiro Education
 
 Prototipo académico que simula las funciones principales de Google Classroom:
 cursos, tablón de novedades, trabajo en clase, entregas, calificaciones,
 notificaciones, calendario, perfil de usuario y administración, con módulos
 visibles según el rol.
+
+---
+
+## Propósito del proyecto
+
+Cuando una clase trabaja con material digital, la información acaba repartida
+entre el correo para enviar la guía, un grupo de mensajería para avisar del
+plazo, una carpeta compartida para recibir los trabajos y una hoja de cálculo
+aparte para las notas. De ahí salen tres problemas concretos:
+
+1. **No hay una única fuente de verdad.** El estudiante no puede responder con
+   certeza «qué tengo pendiente y para cuándo».
+2. **La entrega no queda registrada.** No existe una marca de tiempo confiable
+   que distinga una entrega puntual de una tardía.
+3. **La retroalimentación se pierde.** La nota y el comentario del docente
+   viajan por un canal distinto al del trabajo que los originó.
+
+> **Kiro Education centraliza el ciclo completo de una actividad académica
+> —publicación, entrega, calificación y retroalimentación— en un solo sistema
+> donde cada usuario ve únicamente lo que su rol le permite.**
+
+En concreto, el sistema es el registro único de la actividad de la clase:
+
+- La **publicación** queda fechada y notificada a los inscritos.
+- La **entrega** queda marcada con su hora exacta y su condición de puntual o
+  tardía, que decide el servidor y no el cliente.
+- La **calificación** queda ligada a la entrega que la produjo, con una etapa de
+  borrador que el estudiante no ve hasta que el docente la devuelve.
+- La **comunicación** ocurre junto al trabajo del que se habla, en dos canales:
+  comentarios de clase y comentarios privados alumno ↔ docente.
+
+### Qué puede hacer cada rol
+
+| Rol | Alcance |
+|---|---|
+| **Administrador** | Crea cuentas de cualquier rol, cambia roles, activa o desactiva, restablece contraseñas, vincula acudientes y consulta métricas y clases de todo el sistema |
+| **Docente** | Crea y personaliza sus clases, publica trabajo y anuncios, adjunta material, organiza por temas, califica en borrador y devuelve notas, exporta la libreta |
+| **Estudiante** | Se une con un código, consulta sus pendientes, adjunta y entrega su trabajo, responde preguntas y consulta sus notas |
+| **Acudiente** | Consulta de solo lectura del progreso, promedio y notas del estudiante a su cargo |
+
+### Naturaleza y límites del proyecto
+
+Es un **prototipo académico con fines de demostración y aprendizaje**: no es un
+producto en producción ni un reemplazo de Google Classroom.
+
+La palabra «simula» debe entenderse con precisión: el sistema **reproduce el
+comportamiento** de los flujos de Classroom —los estados de una entrega, la
+visibilidad de una nota en borrador, el código para unirse a una clase— sobre
+**su propia base de datos y su propio backend**. No se conecta con Google, no usa
+sus APIs y no importa ni exporta datos de cuentas reales de Google.
+
+Su valor técnico está en demostrar, sobre un caso de uso realista y conocido:
+
+- modelado relacional normalizado con integridad referencial,
+- una API REST con autenticación y autorización por roles,
+- una interfaz construida con componentes reutilizables,
+- y una batería de pruebas automatizadas que respalda lo anterior.
+
+El detalle de objetivos, requerimientos y alcance —con lo que queda
+explícitamente fuera y por qué— está en
+[`docs/DOCUMENTACION.md`](docs/DOCUMENTACION.md).
+
+---
+
+## Tecnologías
 
 - **Frontend:** React 19 + TypeScript + Vite + Tailwind CSS v4 (diseño atómico)
 - **Backend:** Node + Express 5 + TypeScript (capas por responsabilidad)
@@ -53,6 +118,7 @@ Todas usan la contraseña `123456`:
 | `carlos@classroom.test` | Docente | Sus propias clases |
 | `jostin@classroom.test` | Estudiante | Pendientes, entregar trabajo |
 | `laura@classroom.test` | Estudiante | Una entrega ya calificada |
+| `mateo@classroom.test` | Estudiante | Una entrega pendiente de calificar |
 | `rosa@classroom.test` | Acudiente | Solo consulta |
 
 ---
@@ -63,13 +129,16 @@ Los scripts SQL están en:
 
 | Archivo | Qué hace |
 |---|---|
-| `backend/src/database/migrations/001_schema.sql` | Crea `classroom_db`, 12 tablas y 2 vistas |
+| `backend/src/database/migrations/001_schema.sql` | Crea `classroom_db`, 13 tablas, 2 vistas y 3 índices de apoyo |
 | `backend/src/database/seeds/002_seed.sql` | Carga usuarios, cursos, tareas y entregas de prueba |
 | `backend/src/database/migrations/003_customization.sql` | Solo si **ya tienes datos**: añade personalización, perfil y ajustes sin borrar nada (idempotente) |
+| `backend/src/database/migrations/004_theme.sql` | Solo si **ya tienes datos**: añade la preferencia de tema (idempotente) |
+| `backend/src/database/migrations/005_guardians.sql` | Solo si **ya tienes datos**: añade `guardian_students` y los 3 índices (idempotente) |
 
-> `003` usa `DELIMITER`, que es una directiva del cliente MySQL. Ejecútalo en
-> **MySQL Workbench** o con `mysql -u root < 003_customization.sql`, no con
-> `npm run db:setup`. Si puedes reiniciar la base, `npm run db:reset` ya lo incluye todo.
+> `003`, `004` y `005` usan `DELIMITER`, que es una directiva del cliente MySQL y
+> no una instrucción SQL. Ejecútalas en **MySQL Workbench** o con
+> `mysql -u root < 003_customization.sql`, **no** con `npm run db:setup`. Si
+> puedes reiniciar la base, `npm run db:reset` ya lo incluye todo.
 
 Hay dos formas de ejecutarlos:
 
@@ -106,7 +175,8 @@ roles ──< users ──< enrollments >── courses
 | `attachments` | adjuntos polimórficos (tarea, entrega o anuncio) |
 | `comments` | comentarios de clase o privados |
 | `notifications` | avisos por usuario, con contador de no leídos |
-| `user_settings` | preferencias por usuario: densidad, idioma, notificaciones, ver archivadas |
+| `user_settings` | preferencias por usuario: tema, densidad, idioma, notificaciones, ver archivadas |
+| `guardian_students` | vínculo acudiente ↔ estudiante, con el parentesco |
 
 **Vistas de apoyo**
 
@@ -160,7 +230,9 @@ classroom-react/
 │  └─ server.ts
 │
 ├─ scripts/db-setup.mjs
-├─ tests/e2e/smoke.spec.ts
+├─ docs/DOCUMENTACION.md            # documentacion formal + anexo de capturas
+├─ scripts/capturas.mjs             # genera docs/Anexo-Capturas.pdf
+├─ tests/e2e/                       # 38 pruebas en 5 archivos
 ├─ playwright.config.ts
 ├─ vite.config.ts
 ├─ tsconfig.frontend.json  ·  tsconfig.backend.json
