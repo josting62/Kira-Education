@@ -4,6 +4,7 @@ import { IconButton } from '@/components/atoms/IconButton'
 import { Menu } from '@/components/molecules/Menu'
 import { ThemeToggle } from '@/components/molecules/ThemeToggle'
 import { Icon } from '@/assets/icons'
+import escudo from '@/assets/logos/escudo.png'
 import { useAuth } from '@/hooks/useAuth'
 
 interface TopBarProps {
@@ -22,9 +23,8 @@ export const TopBar = ({ onToggleSidebar, unreadCount = 0 }: TopBarProps) => {
       <IconButton icon="menu" label="Abrir menu principal" onClick={onToggleSidebar} />
 
       <Link to="/" className="flex items-center gap-2 pl-1">
-        <span className="flex size-8 items-center justify-center rounded-lg bg-accent-500 text-white">
-          <Icon.course className="size-4" aria-hidden />
-        </span>
+        {/* Decorativo: el nombre de al lado ya identifica la marca. */}
+        <img src={escudo} alt="" aria-hidden className="h-10 w-auto shrink-0 select-none" />
         <span className="font-display text-xl font-semibold tracking-tight text-ink">
           Kiro Education
         </span>

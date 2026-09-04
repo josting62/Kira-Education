@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Outlet } from 'react-router-dom'
 import { TopBar } from '@/components/organisms/TopBar'
 import { SideNav } from '@/components/organisms/SideNav'
+import { SiteFooter } from '@/components/organisms/SiteFooter'
 import { ApiOfflineBanner } from '@/components/molecules/ApiOfflineBanner'
 import { useFetch } from '@/hooks/useFetch'
 import { useSettings } from '@/hooks/useSettings'
@@ -40,8 +41,11 @@ export const AppShell = () => {
           archived={archived ?? []}
           onClose={() => setSidebarOpen(false)}
         />
-        <main className="min-w-0 flex-1 bg-canvas">
-          <Outlet />
+        <main className="flex min-w-0 flex-1 flex-col bg-canvas">
+          <div className="flex-1">
+            <Outlet />
+          </div>
+          <SiteFooter />
         </main>
       </div>
     </div>

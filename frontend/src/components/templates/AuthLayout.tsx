@@ -1,7 +1,8 @@
 import type { ReactNode } from 'react'
-import { Icon } from '@/assets/icons'
 import { ApiOfflineBanner } from '@/components/molecules/ApiOfflineBanner'
 import { ThemeToggle } from '@/components/molecules/ThemeToggle'
+import { SiteFooter } from '@/components/organisms/SiteFooter'
+import escudo from '@/assets/logos/escudo.png'
 
 interface AuthLayoutProps {
   title: string
@@ -22,9 +23,7 @@ export const AuthLayout = ({ title, subtitle, children, footer }: AuthLayoutProp
 
     <div className="mx-auto w-full max-w-sm flex-1 px-4 pb-10 sm:pb-16">
       <div className="mb-8 flex flex-col items-center gap-3 text-center">
-        <span className="flex size-12 items-center justify-center rounded-xl bg-accent-500 text-white">
-          <Icon.course className="size-6" aria-hidden />
-        </span>
+        <img src={escudo} alt="" aria-hidden className="h-20 w-auto select-none" />
         <div>
           <h1 className="font-display text-2xl font-semibold tracking-tight text-ink">
             Kiro Education
@@ -40,5 +39,7 @@ export const AuthLayout = ({ title, subtitle, children, footer }: AuthLayoutProp
 
       {footer && <div className="mt-5 text-center text-xs text-ink-muted">{footer}</div>}
     </div>
+
+    <SiteFooter />
   </div>
 )

@@ -1,8 +1,8 @@
 import { cn } from '@/lib/cn'
-import cat from '@/assets/images/cat.jpeg'
 import fish from '@/assets/images/fish.jpeg'
 import squirrel from '@/assets/images/squiller.jpeg'
 import wolf from '@/assets/images/wolf.jpeg'
+import escudo from '@/assets/logos/escudo.png'
 
 /**
  * Ilustraciones de los estados vacios.
@@ -26,10 +26,16 @@ const SCENES: Record<IllustrationName, string> = {
   stream: squirrel, // ardilla y utiles: el tablon de la clase
   done: fish, // pecera en calma: no queda nada pendiente
   notifications: fish,
-  grades: cat, // gato sobre el cuaderno: libreta de calificaciones
-  archive: cat,
+  grades: escudo, // escudo del colegio: libreta de calificaciones
+  archive: escudo,
   notFound: squirrel,
 }
+
+/**
+ * Escenas dibujadas sobre fondo transparente (el escudo). El multiply las
+ * apagaria contra el fondo oscuro, asi que ahi no se aplica la mezcla.
+ */
+const TRANSPARENT = new Set<IllustrationName>(['grades', 'archive'])
 
 interface IllustrationProps {
   name: IllustrationName
@@ -43,6 +49,10 @@ export const Illustration = ({ name, className }: IllustrationProps) => (
     alt=""
     aria-hidden
     data-illustration={name}
-    className={cn('h-auto w-56 shrink-0 select-none mix-blend-multiply', className)}
+    className={cn(
+      'h-auto w-56 shrink-0 select-none',
+      !TRANSPARENT.has(name) && 'mix-blend-multiply',
+      className,
+    )}
   />
 )
